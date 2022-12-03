@@ -1,6 +1,6 @@
-package com.wgarden.book.springApplication.web;
+package com.wgarden.book.web;
 
-import com.wgarden.book.springApplication.web.dto.HelloResponseDTO;
+import com.wgarden.book.web.dto.HelloResponseDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,4 +1,4 @@
-package com.wgarden.book.springApplication.web;
+package com.wgarden.book.web;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.wgarden.book.springApplication.web.dto;
+package com.wgarden.book.web.dto;
 
 import org.junit.jupiter.api.Test;
 
