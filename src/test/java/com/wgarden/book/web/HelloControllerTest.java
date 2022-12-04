@@ -1,18 +1,26 @@
 package com.wgarden.book.web;
 
+import com.wgarden.book.config.auth.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = HelloController.class)//여러스프링 어노테이션 중 스프링 MVC에 집중할 수있는 어노테이션
+@WebMvcTest(controllers = HelloController.class,
+excludeFilters = {
+        @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
+})//여러스프링 어노테이션 중 스프링 MVC에 집중할 수있는 어노테이션
 class HelloControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @WithMockUser(roles = "USER")
     @Test
     public void hello_return() throws Exception {
         String hello ="hello";
@@ -22,6 +30,7 @@ class HelloControllerTest {
                 .andExpect(content().string(hello)); //응답 본문의 내용을 검증
     }
 
+    @WithMockUser(roles = "USER")
     @Test
     public void helloDto_return() throws Exception {
         String name ="hello";
