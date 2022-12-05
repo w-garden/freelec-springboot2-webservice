@@ -1,14 +1,13 @@
 package com.wgarden.book.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wgarden.book.domain.posts.Posts;
 import com.wgarden.book.domain.posts.PostsRepository;
-import com.wgarden.book.web.dto.PostsSaveReqeustDto;
+import com.wgarden.book.web.dto.PostsSaveRequestDto;
 import com.wgarden.book.web.dto.PostsUpdateRequestDto;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PostsApiControllerTest {
 
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+    @Autowired
+    private PostsRepository postsRepository;
 
     @Autowired
     private WebApplicationContext context;
@@ -41,19 +47,7 @@ public class PostsApiControllerTest {
 
 
 
-    @LocalServerPort
-    private int port;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
-    private PostsRepository postsRepository;
-
-    @AfterEach
-    public void tearDown()  {
-        postsRepository.deleteAll();
-    }
     @BeforeEach
     public void setup(){
         mvc = MockMvcBuilders
@@ -61,13 +55,22 @@ public class PostsApiControllerTest {
                 .apply(springSecurity())
                 .build();
     }
+
+
+
+    @AfterEach
+    public void tearDown()  {
+        postsRepository.deleteAll();
+    }
+
     @Test
+    @DisplayName("등록된다")
     @WithMockUser(roles = "USER")
     public void Posts_enroll() throws Exception {
         //given
         String title = "title";
         String content = "content";
-        PostsSaveReqeustDto reqeustDto = PostsSaveReqeustDto.builder()
+        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
                 .title(title)
                 .content(content)
                 .author("author")
@@ -76,8 +79,8 @@ public class PostsApiControllerTest {
         String url ="http://localhost:" + port +"/api/v1/posts";
         //when
         mvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .contentType(new ObjectMapper().writeValueAsString(reqeustDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
         //then
@@ -88,6 +91,7 @@ public class PostsApiControllerTest {
 
 
     @Test
+    @DisplayName("수정된다")
     @WithMockUser(roles = "USER")
     public void Posts_update() throws Exception {
         //given
@@ -111,8 +115,8 @@ public class PostsApiControllerTest {
         HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
         //when
-        mvc.perform(put(url).contentType(MediaType.APPLICATION_JSON_UTF8)
-                .contentType(new ObjectMapper().writeValueAsString(requestDto))).andExpect(status().isOk());
+        mvc.perform(put(url).contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestDto))).andExpect(status().isOk());
 
         //then
 

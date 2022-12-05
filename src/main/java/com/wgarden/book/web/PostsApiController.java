@@ -2,7 +2,7 @@ package com.wgarden.book.web;
 
 import com.wgarden.book.service.posts.PostsService;
 import com.wgarden.book.web.dto.PostsResponseDto;
-import com.wgarden.book.web.dto.PostsSaveReqeustDto;
+import com.wgarden.book.web.dto.PostsSaveRequestDto;
 import com.wgarden.book.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ public class PostsApiController {
 
 
     @PostMapping("/api/v1/posts")
-    public Long save(@RequestBody PostsSaveReqeustDto requestDto) {
+    public Long save(@RequestBody PostsSaveRequestDto requestDto) {
         return postsService.save(requestDto);
     }
 
